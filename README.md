@@ -39,9 +39,6 @@ class Product(models.Model):
     category = models.CharField(max_length=100)
     is_featured = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.name
-
 
 e. Membuat sebuah fungsi pada views.py untuk dikembalikan ke dalam sebuah template HTML yang menampilkan nama aplikasi serta nama dan kelas kamu.
 Saya membuat sebuah fungsi pada views.py dengan nama show_main. Di dalam fungsi ini, saya menyiapkan sebuah context dictionary yang berisi data berupa nama aplikasi, nama saya, serta kelas saya. Context ini kemudian saya kirimkan ke template main.html menggunakan fungsi render. Saya juga mengubah format pada file HTML agar data yang dikirim dari context bisa ditampilkan dengan lebih rapi dan terstruktur. Dengan perubahan ini, halaman main.html tidak hanya menampilkan teks biasa, tetapi sudah diformat menggunakan elemen-elemen HTML sehingga informasi seperti nama aplikasi, nama, dan kelas saya terlihat lebih jelas ketika ditampilkan di browser.

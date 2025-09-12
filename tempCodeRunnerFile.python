@@ -1,0 +1,18 @@
+A = [
+    [2, 4, 0, 6],
+    [12, 6, 9, 3], 
+    [9, 6, 2, 5],
+    [4, 2, 3, 1]
+] #TODO
+b = [4, 15, 2, 5] #TODO
+
+A_copy = [[A[i][j] for j in range(len(A))] for i in range(len(A))]
+b_copy = b.copy()
+
+# Penyelesaian dengan metode Gauss-Jordan
+hasil = gauss_jordan_elimination(A_copy, b_copy)
+print("\nHasil akhir:", [f"{x:.2f}" for x in hasil])
+
+# Penyelesaian dengan NumPy
+hasil_numpy = solve_with_numpy(A, b)
+print("Hasil NumPy:", [f"{x:.2f}" for x in hasil_numpy])
