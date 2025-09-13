@@ -68,3 +68,31 @@ Django sudah menyediakan banyak fitur bawaan yang cukup memudahkan bagi saya, pe
 
 6. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
 Tidak, kebetulan asdos saya Ka Fahri sangat baik dan membantu ketika saya kesusahan. Ka Fahri juga mengingatkan kalau project yang saya buat masih ada kesalahan.
+
+
+------------------------------------------------TUGAS 3---------------------------------------------------
+7. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+Data delivery diperlukan karena menjadi mekanisme utama untuk mengirimkan data antar komponen dalam platform, baik dari server ke pengguna maupun antar sistem. Tanpa data delivery yang baik, informasi tidak akan sampai secara cepat, akurat, dan konsisten sehingga platform tidak bisa berfungsi sesuai kebutuhan.
+
+8. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+Menurut saya, baik XML maupun JSON sebenarnya sama-sama digunakan untuk pertukaran data, tetapi JSON lebih populer karena lebih sederhana dan ringkas dibandingkan XML. Struktur XML cenderung verbose dengan banyak tag pembuka dan penutup, sehingga membuat ukuran data lebih besar dan agak sulit dibaca manusia. JSON memiliki format yang lebih ringan dan mudah dipahami karena mirip dengan struktur objek di banyak bahasa pemrograman modern. Selain itu, JSON juga lebih cepat diproses dan sudah didukung secara luas oleh hampir semua bahasa pemrograman serta framework web yang ada sekarang. Karena itu, JSON lebih banyak digunakan dalam pengembangan aplikasi web dan API modern, sementara XML lebih sering dipertahankan untuk kebutuhan tertentu atau sistem lama yang masih bergantung pada format tersebut.
+
+9. Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+Method is_valid() pada form Django berfungsi untuk mengecek apakah data yang diinput pengguna sudah sesuai dengan aturan validasi yang ditentukan di form. Kalau valid, kita bisa langsung gunakan datanya, kalau tidak valid maka akan muncul error yang bisa ditampilkan kembali ke pengguna. Method ini penting supaya data yang masuk ke sistem tetap konsisten, bersih, dan aman.
+
+10. Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+Kita membutuhkan csrf_token pada form Django untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Token ini memastikan bahwa setiap permintaan POST benar-benar berasal dari pengguna yang sah dan bukan dari pihak luar. Kalau tidak ditambahkan, aplikasi jadi rentan terhadap serangan CSRF, di mana penyerang bisa membuat pengguna tanpa sadar mengirimkan request berbahaya (misalnya transfer uang, ganti password, atau hapus data) hanya dengan mengklik link atau membuka halaman berisi script berbahaya. Jadi tanpa csrf_token, penyerang bisa memanipulasi sesi pengguna dan menjalankan aksi penting di aplikasi seolah-olah berasal dari pengguna tersebut.
+
+11. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+Pertama, aku membuat kerangka dasar base.html di folder templates dan menyesuaikan settings.py supaya template bisa dikenali. Setelah itu, aku buat main.html yang extend dari base.html untuk menampilkan identitas dan daftar produk.
+
+Selanjutnya, aku definisikan model Product di models.py dengan field seperti title, content, category, thumbnail, is_featured, serta tambahan specification, price, dan product_views. Lalu aku bikin forms.py dengan ProductForm untuk input data produk.
+
+Di views.py, aku buat fungsi show_main (tampilkan semua produk), create_product (form tambah produk), dan show_product (detail produk + increment views). Aku juga menambahkan fungsi untuk menampilkan data dalam format XML/JSON, termasuk berdasarkan id, lengkap dengan try-except agar lebih aman.
+
+Untuk tampilan, aku atur urutannya: nama produk → specification → thumbnail → price → description. Tombol Read More mengarahkan ke detail produk, sementara produk duplikat aku hapus lewat Django Admin.
+
+Terakhir, aku jalankan server, coba tambah produk, cek detail (views bertambah), dan akses endpoint /xml/ serta /json/. Semua sudah berjalan sesuai yang diharapkan meski sempat ada error kecil karena lupa migrate model.
+
+12.  Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+Tidak ada, Ka Fakhri sudah baikk
