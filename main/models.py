@@ -13,7 +13,6 @@ class Product(models.Model):
         ('OTHERS', 'Lain-lain'),
     ]
     
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     specification = models.TextField(blank=True, null=True)
     price = models.IntegerField()
