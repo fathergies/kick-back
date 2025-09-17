@@ -96,3 +96,5 @@ Terakhir, aku jalankan server, coba tambah produk, cek detail (views bertambah),
 
 12.  Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
 Tidak ada, Ka Fakhri sudah baikk
+
+Link Postman : https://drive.google.com/drive/folders/1da5nmbIka5vAdV5VBieGnO8ewMJClPAa?usp=drive_link
