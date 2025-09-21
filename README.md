@@ -98,3 +98,32 @@ Terakhir, aku jalankan server, coba tambah produk, cek detail (views bertambah),
 Tidak ada, Ka Fakhri sudah baikk
 
 Link Postman : https://drive.google.com/drive/folders/1da5nmbIka5vAdV5VBieGnO8ewMJClPAa?usp=drive_link
+
+
+------------------------------------------------TUGAS 4---------------------------------------------------
+13.  Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya
+django authenticationform adalah form bawaan django yang digunakan untuk proses autentikasi atau login pengguna. form ini sudah menyediakan field username dan password serta dilengkapi dengan validasi dasar, seperti memeriksa apakah akun pengguna terdaftar, apakah kata sandi sesuai, dan apakah akun dalam keadaan aktif. 
+
+kelebihan dari authenticationform adalah praktis karena tidak perlu membuat form login dari awal, aman karena menggunakan sistem validasi django yang sudah teruji, serta mudah diintegrasikan dengan view bawaan seperti loginview. selain itu, form ini juga tetap bisa dikustomisasi sesuai kebutuhan, misalnya untuk menambahkan tampilan atau field tambahan. 
+
+kekurangannya adalah kurang fleksibel apabila sistem login yang dibutuhkan berbeda (misalnya login menggunakan email atau nomor telepon), tampilan default yang sangat sederhana sehingga memerlukan penyesuaian desain, serta tidak mendukung fitur autentikasi modern seperti recaptcha atau two-factor authentication tanpa penambahan manual. dengan demikian, authenticationform sangat berguna untuk kebutuhan login standar, namun untuk kebutuhan yang lebih kompleks biasanya perlu dilakukan pengembangan lebih lanjut.
+
+14.  Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+autentikasi adalah proses memastikan identitas pengguna (contoh: login dengan username dan password), sedangkan otorisasi adalah proses menentukan hak akses pengguna setelah login (contoh: boleh tambah data atau hanya lihat data).
+
+di django, autentikasi diatur lewat authentication framework yang mengurus login, logout, dan session. sedangkan otorisasi diatur lewat permission dan group, ditambah decorator seperti @login_required atau @permission_required untuk membatasi akses halaman sesuai izin pengguna.
+
+15. Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+kelebihan cookies adalah bisa disimpan langsung di browser pengguna, mudah digunakan, dan tidak membebani server. tapi kekurangannya data bisa dilihat atau dimodifikasi oleh user, kapasitasnya kecil, dan rawan masalah keamanan kalau tidak dienkripsi.
+
+kelebihan session adalah data disimpan di server sehingga lebih aman, bisa menyimpan informasi lebih besar dan kompleks, serta sulit dimanipulasi oleh user. kekurangannya butuh resource server lebih banyak karena harus menyimpan data tiap user, dan biasanya bergantung pada cookies atau mekanisme lain untuk menyimpan session id di browser.
+
+16. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+penggunaan cookies tidak sepenuhnya aman secara default karena ada beberapa risiko seperti cookie theft (dicuri lewat xss), session hijacking, atau manipulasi data kalau cookie tidak diamankan. secara bawaan, django sudah punya beberapa mekanisme untuk mengurangi risiko ini, misalnya ada SESSION_COOKIE_HTTPONLY biar cookie tidak bisa diakses lewat javascript, SESSION_COOKIE_SECURE biar cookie hanya dikirim lewat https, serta CSRF tokens untuk cegah serangan cross-site request forgery. tapi pengembang tetap harus hati-hati dengan konfigurasi dan memastikan cookie penting seperti session id selalu dienkripsi dan ditandai secure.
+
+17. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+pertama, aku mulai buat fungsi registrasi supaya pengguna bisa bikin akun baru. di sini pengguna isi username dan password, lalu sistem bakal simpan ke database. begitu akun berhasil dibuat, user bisa login pakai akun tersebut.terus untuk login kurang lebih sama dengan regis tetapi aku menambahkan cookie last_login untuk mencatat kapan terakhir kali pengguna berhasil masuk. fungsi logout kemudian dibuat untuk menghapus session tersebut dan sekaligus menghapus cookie last_login agar tidak ada data sisa setelah keluar.
+
+terus aku ngehubungin product ke user lewat foreignkey, jadi setiap produk harus tahu keterangan authornya siapa. caranya, di tabel product ditambahkan kolom yang mengacu ke tabel user. nah relasi ini disebut foreign key. jadinya, 1 user bisa punya banyak produk, tapi 1 produk hanya bisa punya 1 user sebagai author.
+
+terakhir, aku memperbaiki template detail produk untuk show informasi penulis dengan benar. jika produk memiliki user, maka username pemilik ditampilkan, sedangkan jika tidak, ditampilkan sebagai "anonymous". selain itu, aku juga menambahkan informasi last_login di halaman utama untuk menunjukkan kapan pengguna terakhir kali masuk.
