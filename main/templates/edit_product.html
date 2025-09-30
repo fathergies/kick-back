@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block meta %}
+<title>Edit Product - Football Product</title>
+<style>
+  .form-container {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  input[type="text"],
+  input[type="url"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+  input[type="text"]:focus,
+  input[type="url"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+  }
+  input[type="checkbox"] {
+    height: 1.25rem;
+    width: 1.25rem;
+    color: #16a34a;
+  }
+  textarea {
+    height: 8rem;
+    resize: vertical;
+  }
+</style>
+{% endblock meta %}
+
+{% block content %}
+<div class="bg-gray-100 w-full min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Back Navigation -->
+    <div class="mb-8">
+      <a href="{% url 'main:show_main' %}" class="text-gray-700 hover:text-green-600 font-semibold text-lg transition-colors duration-200">
+        ← Back to Products
+      </a>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container bg-white rounded-2xl shadow-lg overflow-hidden
+      {% if product.is_featured %} bg-gradient-to-r from-yellow-300 via-orange-300 to-yellow-300 p-[2px] shadow-[0_0_12px_rgba(250,204,21,0.5),0_0_24px_rgba(249,115,22,0.2)] {% else %} border border-gray-100 {% endif %}
+      transition-all duration-300 hover:shadow-xl">
+      <div class="bg-white rounded-2xl p-8">
+        <div class="mb-8">
+          <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Edit Product</h1>
+          <p class="text-base text-gray-600">Update your football product details</p>
+        </div>
+
+        <form method="POST" class="space-y-8">
+          {% csrf_token %}
+          
+          <!-- Form Fields -->
+          {% for field in form %}
+            <div>
+              <label for="{{ field.id_for_label }}" class="block text-lg font-semibold text-gray-900 mb-2">
+                {{ field.label }}
+              </label>
+              <div class="w-full">
+                {{ field }}
+                {% if field.name == 'thumbnail' and product.thumbnail %}
+                  <div class="mt-4">
+                    <p class="text-sm text-gray-600 mb-2">Current Thumbnail:</p>
+                    <div class="relative w-48 h-32 rounded-lg overflow-hidden bg-gray-200">
+                      <img src="{{ product.thumbnail }}" alt="Thumbnail Preview" class="w-full h-full object-cover">
+                      <a href="{% url 'main:edit_product' product.id %}?clear_thumbnail=true" 
+                         class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-opacity duration-200 flex items-center justify-center text-white opacity-0 hover:opacity-100 text-sm">
+                        Clear Thumbnail
+                      </a>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+              {% if field.help_text %}
+                <p class="mt-2 text-sm text-gray-500">{{ field.help_text }}</p>
+              {% endif %}
+              {% for error in field.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <!-- Form Actions -->
+          <div class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200">
+            <a href="{% url 'main:show_main' %}" class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md text-center">
+              Cancel
+            </a>
+            <button type="submit" class="order-1 sm:order-2 flex-1 bg-green-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg">
+              Update Product
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
