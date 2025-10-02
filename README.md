@@ -127,3 +127,28 @@ pertama, aku mulai buat fungsi registrasi supaya pengguna bisa bikin akun baru. 
 terus aku ngehubungin product ke user lewat foreignkey, jadi setiap produk harus tahu keterangan authornya siapa. caranya, di tabel product ditambahkan kolom yang mengacu ke tabel user. nah relasi ini disebut foreign key. jadinya, 1 user bisa punya banyak produk, tapi 1 produk hanya bisa punya 1 user sebagai author.
 
 terakhir, aku memperbaiki template detail produk untuk show informasi penulis dengan benar. jika produk memiliki user, maka username pemilik ditampilkan, sedangkan jika tidak, ditampilkan sebagai "anonymous". selain itu, aku juga menambahkan informasi last_login di halaman utama untuk menunjukkan kapan pengguna terakhir kali masuk.
+
+
+------------------------------------------------TUGAS 5---------------------------------------------------
+18. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+ada 4 aturan utama yang nentuin css mana yang menang:
+a. importance -> aturan !important menangin rule, kecuali ada !important lain dengan spesifisitas lebih tinggi dari origin lain.
+b. origin -> stylesheet dari author (kamu) lebih prioritas daripada user-agent (browser default). kalau ada user styles itu masuk juga, tapi biasanya nggak dipakai.
+c. specificity -> aturan numerik:
+   - inline style (style="...") paling spesifik.
+   - id selector (#id) lebih kuat daripada class.
+   - class / attribute / pseudo-class (.kelas, [attr], :hover) setara dan lebih kuat dari element
+   - element / pseudo-element (div, p, ::after) paling lemah
+d. source order — kalau spesifisitas sama, yang muncul belakangan di stylesheet (atau ditulis belakangan) menang
+
+19. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+karena sekarang orang akses web nggak cuma dari laptop doang, tapi juga dari hp, tablet, sampe layar gede kayak monitor ultrawide. kalau web ga responsive, tampilannya bisa berantakan, teks kepotong, tombol jadi susah diklik, dan bikin user experience jelek. contoh aplikasi yang udah responsive itu kayak twitter atau tokopedia, mereka rapi dipake di layar apa aja. sedangkan contoh yang belum responsive biasanya web kampus lama atau situs pemerintahan yang masih fix layout, jadi kalau dibuka di hp harus zoom in zoom out dulu.
+
+20. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+margin itu jarak di luar elemen buat ngasih space ke elemen lain, border itu garis pembatas di tepi elemen, sedangkan padding itu jarak antara isi elemen sama bordernya. implementasinya bisa pake property css kayak margin: 20px;, border: 2px solid black;, dan padding: 10px;.
+
+21.  Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+kalau flexbox itu cara buat ngatur layout elemen secara fleksibel dalam satu arah (horizontal atau vertical). gunanya biar gampang bikin alignment, spacing, dan distribusi elemen. contohnya bisa bikin navbar dengan item rata kanan kiri pakai display: flex; justify-content: space-between;. sedangkan grid layout itu lebih powerful buat bikin struktur dua dimensi, jadi bisa ngatur baris dan kolom sekaligus. misalnya bikin layout majalah atau dashboard pake display: grid; grid-template-columns: repeat(3, 1fr);.
+
+22. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+step-by-step implementasi checklist tadi biasanya aku mulai dari bikin struktur beberapa html baru yang dibutuhin dulu, terus ditambahin css dengan mikirin hierarchy selector biar ga bentrok. abis itu aku coba testing di berbagai device pake dev tools chrome buat pastiin responsivenya jalan. margin, border, padding aku coba dulu pake box model biar elemen ga nempel. buat layout biasanya awalnya pake flexbox buat yang sederhana kayak navbar atau card, terus kalau layoutnya kompleks aku pake grid. kalau udah jalan, baru aku refine stylingnya biar lebih enak dilihat dan rapih.

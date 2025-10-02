@@ -40,7 +40,7 @@
       </div>
       {% if user.is_authenticated %}
         <div class="text-sm text-gray-500">
-          Last login: {{ last_login|date:"M j, Y g:i A" }}
+          Last login: {{ last_login }}
         </div>
       {% endif %}
     </div>

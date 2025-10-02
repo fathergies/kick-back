@@ -130,5 +130,9 @@ def edit_product(request, id):
 
     return render(request, "edit_product.html", context)
 
+def product_navbar(request,id):
+    product = Product.get.all()
+    
+
 
 
