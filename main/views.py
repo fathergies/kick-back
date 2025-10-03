@@ -15,8 +15,11 @@ from django.urls import reverse
 @login_required(login_url='/login')
 def show_main(request):
     filter_type = request.GET.get("filter", "all")
+    category = request.GET.get("category", None)
 
-    if filter_type == "all":
+    if category:
+        product_list = Product.objects.filter(category=category)
+    elif filter_type == "all":
         product_list = Product.objects.all()
     else:
         product_list = Product.objects.filter(user=request.user)
@@ -25,9 +28,24 @@ def show_main(request):
         'name': request.user.username,
         'class': 'PBP F',
         'product_list': product_list,
-        'last_login': request.COOKIES.get('last_login', 'Never')
+        'last_login': request.COOKIES.get('last_login', 'Never'),
+        'selected_category': category,
     }
 
+    return render(request, "main.html", context)
+
+@login_required(login_url='/login')
+def show_category(request, category):
+    # filter produk sesuai kategori
+    product_list = Product.objects.filter(category=category)
+
+    context = {
+        'name': request.user.username,
+        'class': 'PBP F',
+        'product_list': product_list,
+        'last_login': request.COOKIES.get('last_login', 'Never'),
+        'selected_category': category,  # buat highlight di navbar
+    }
     return render(request, "main.html", context)
 
 def create_product(request):
@@ -133,6 +151,5 @@ def edit_product(request, id):
 def product_navbar(request,id):
     product = Product.get.all()
     
-
 
 

@@ -13,13 +13,19 @@
       
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center space-x-8">
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Jersey</a>
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shoes</a>
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shorts</a>
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Accessories</a>
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Merchandise</a>
-        <a href="#" class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Others</a>
-      </div>
+      <a href="{% url 'main:show_category' 'JERSEY' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Jersey</a>
+      <a href="{% url 'main:show_category' 'SHOES' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shoes</a>
+      <a href="{% url 'main:show_category' 'SHORTS' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shorts</a>
+      <a href="{% url 'main:show_category' 'GEAR' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Accessories</a>
+      <a href="{% url 'main:show_category' 'MERCH' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Merchandise</a>
+      <a href="{% url 'main:show_category' 'OTHERS' %}" 
+        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Others</a>
+    </div>
 
       <!-- Desktop User Section -->
       <div class="hidden md:flex items-center space-x-6">
