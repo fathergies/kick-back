@@ -1,67 +1,274 @@
 {% extends 'base.html' %}
 {% block meta %}
-{% load widget_tweaks %}
-<title>Create Product - Kick Back</title>
+<title>Create Product - Football Product</title>
 <style>
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* Custom form styling */
+  .form-style input[type="text"],
+  .form-style input[type="number"],
+  .form-style input[type="email"],
+  .form-style input[type="url"],
+  .form-style input[type="password"],
+  .form-style textarea,
+  .form-style select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background-color: #fafafa;
   }
-  .fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+
+  .form-style input[type="text"]:focus,
+  .form-style input[type="number"]:focus,
+  .form-style input[type="email"]:focus,
+  .form-style input[type="url"]:focus,
+  .form-style input[type="password"]:focus,
+  .form-style textarea:focus,
+  .form-style select:focus {
+    outline: none;
+    border-color: #16a34a;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  }
+
+  .form-style input[type="text"]:hover,
+  .form-style input[type="number"]:hover,
+  .form-style input[type="email"]:hover,
+  .form-style input[type="url"]:hover,
+  .form-style input[type="password"]:hover,
+  .form-style textarea:hover,
+  .form-style select:hover {
+    border-color: #d1d5db;
+    background-color: #ffffff;
+  }
+
+  .form-style textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .form-style input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .form-style input[type="checkbox"]:checked {
+    background-color: #16a34a;
+    border-color: #16a34a;
+  }
+
+  .form-style input[type="file"] {
+    padding: 0.5rem;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 0.5rem;
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .form-style input[type="file"]:hover {
+    border-color: #16a34a;
+    background-color: #f0fdf4;
+  }
+
+  /* File input custom styling */
+  .form-style input[type="file"]::file-selector-button {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    background-color: #dcfce7;
+    color: #15803d;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .form-style input[type="file"]::file-selector-button:hover {
+    background-color: #bbf7d0;
+  }
+
+  /* Label enhancement */
+  .form-style label {
+    font-weight: 500;
+    color: #374151;
+  }
+
+  /* Required field indicator */
+  .form-style label.required::after {
+    content: " *";
+    color: #dc2626;
+  }
+
+  /* Error styling */
+  .form-style .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+  }
+
+  .form-style .errorlist li {
+    color: #dc2626;
+    font-size: 0.875rem;
+  }
+
+  /* Checkbox container */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: #fafafa;
+    border-radius: 0.5rem;
+    border: 1.5px solid #e5e7eb;
+    transition: all 0.2s ease;
+  }
+
+  .checkbox-container:hover {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  /* Smooth animations */
+  .form-style * {
+    transition: all 0.2s ease;
+  }
+
+  /* Decorative elements */
+  .header-decoration {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    opacity: 0.1;
+  }
+
+  .decoration-1 {
+    top: -50px;
+    right: -50px;
+    background: white;
+  }
+
+  .decoration-2 {
+    bottom: -50px;
+    left: -50px;
+    background: white;
   }
 </style>
 {% endblock meta %}
 
 {% block content %}
-<div class="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-teal-100 via-white to-teal-200 p-6">
-  <div class="max-w-3xl w-full">
+<div class="bg-gradient-to-br from-gray-50 to-teal-50 w-full min-h-screen">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Back Navigation -->
-    <div class="mb-6 fade-in-up">
-      <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-        ← Back to products
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}" class="inline-flex items-center text-gray-600 hover:text-teal-600 font-medium transition-colors group">
+        <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Back to Products
       </a>
     </div>
     
-    <!-- Form Card -->
-    <div class="bg-white/95 backdrop-blur-lg rounded-3xl border border-gray-200 shadow-2xl p-8 sm:p-10 fade-in-up">
-      <div class="mb-8 text-center">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Create New Product</h1>
-        <p class="text-gray-600 text-base">Share your football product and stories with the community</p>
-      </div>
+    <!-- Header Card -->
+    <div class="bg-gradient-to-r from-teal-600 to-teal-500 rounded-xl shadow-lg p-8 mb-6 relative overflow-hidden">
+      <div class="header-decoration decoration-1"></div>
+      <div class="header-decoration decoration-2"></div>
       
-      <form method="POST" class="space-y-6">
-        {% csrf_token %}
-        {% for field in form %}
+      <div class="relative z-10">
+        <div class="flex items-center mb-4">
+          <div class="bg-white/20 p-3 rounded-lg mr-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+          </div>
           <div>
-            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+            <h1 class="text-3xl font-bold text-white mb-1">Create New Product</h1>
+            <p class="text-teal-50">Share your football product and stories with the community</p>
+          </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-3 gap-4 mt-6">
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+            <p class="text-white/80 text-sm">Step</p>
+            <p class="text-white text-xl font-bold">1/1</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+            <p class="text-white/80 text-sm">Fields</p>
+            <p class="text-white text-xl font-bold">7</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+            <p class="text-white/80 text-sm">Required</p>
+            <p class="text-white text-xl font-bold">5</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sm:p-8 form-style">
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2 {% if field.field.required %}required{% endif %}">
               {{ field.label }}
             </label>
-            <div class="w-full">
-              {{ field|add_class:"w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white" }}
-            </div>
-            {% if field.help_text %}
-              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+            
+            {% if field.name == 'is_featured' %}
+              <div class="checkbox-container">
+                {{ field }}
+                <div class="flex-1">
+                  <span class="text-sm font-medium text-gray-700">Mark as Featured</span>
+                  <p class="text-xs text-gray-500 mt-0.5">This product will be highlighted on the homepage</p>
+                </div>
+              </div>
+            {% else %}
+              <div class="w-full">
+                {{ field }}
+              </div>
             {% endif %}
-            {% for error in field.errors %}
-              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %}
+            
+            {% if field.help_text %}
+              <p class="mt-2 text-sm text-gray-500">{{ field.help_text }}</p>
+            {% endif %}
+            
+            {% if field.errors %}
+              <ul class="errorlist">
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
         {% endfor %}
         
-        <!-- Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-          <a href="{% url 'main:show_main' %}" class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors text-center">
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200 mt-8">
+          <a href="{% url 'main:show_main' %}" class="order-2 sm:order-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 transition-all text-center inline-flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
             Cancel
           </a>
-          <button type="submit" class="order-1 sm:order-2 flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <button type="submit" class="order-1 sm:order-2 flex-1 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-6 py-3 rounded-lg font-medium hover:from-teal-700 hover:to-teal-600 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 inline-flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
             Publish Product
           </button>
         </div>
       </form>
     </div>
-    
   </div>
 </div>
 {% endblock %}
+
