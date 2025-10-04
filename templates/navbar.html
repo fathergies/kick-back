@@ -1,3 +1,44 @@
+<style>
+  /* Active link styling */
+  .nav-link {
+    position: relative;
+    padding-bottom: 0.25rem;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #16a34a, #22c55e);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .nav-link.active {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  .nav-link.active::after {
+    width: 100%;
+  }
+
+  /* Mobile active state */
+  .mobile-nav-link.active {
+    color: #16a34a;
+    font-weight: 600;
+    background-color: #f0fdf4;
+    border-radius: 0.5rem;
+    padding-left: 1rem;
+  }
+</style>
+
 <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl 
      bg-white/80 backdrop-blur-md border border-gray-200 
      shadow-lg rounded-2xl z-50">
@@ -13,19 +54,31 @@
       
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center space-x-8">
-      <a href="{% url 'main:show_category' 'JERSEY' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Jersey</a>
-      <a href="{% url 'main:show_category' 'SHOES' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shoes</a>
-      <a href="{% url 'main:show_category' 'SHORTS' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Shorts</a>
-      <a href="{% url 'main:show_category' 'GEAR' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Accessories</a>
-      <a href="{% url 'main:show_category' 'MERCH' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Merchandise</a>
-      <a href="{% url 'main:show_category' 'OTHERS' %}" 
-        class="relative pb-1 font-medium text-gray-700 hover:text-green-600 transition-colors">Others</a>
-    </div>
+        <a href="{% url 'main:show_category' 'JERSEY' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'JERSEY' in request.path %}active{% endif %}">
+          Jersey
+        </a>
+        <a href="{% url 'main:show_category' 'SHOES' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'SHOES' in request.path %}active{% endif %}">
+          Shoes
+        </a>
+        <a href="{% url 'main:show_category' 'SHORTS' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'SHORTS' in request.path %}active{% endif %}">
+          Shorts
+        </a>
+        <a href="{% url 'main:show_category' 'GEAR' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'GEAR' in request.path %}active{% endif %}">
+          Accessories
+        </a>
+        <a href="{% url 'main:show_category' 'MERCH' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'MERCH' in request.path %}active{% endif %}">
+          Merchandise
+        </a>
+        <a href="{% url 'main:show_category' 'OTHERS' %}" 
+           class="nav-link font-medium text-gray-700 hover:text-green-600 transition-colors {% if request.resolver_match.url_name == 'show_category' and 'OTHERS' in request.path %}active{% endif %}">
+          Others
+        </a>
+      </div>
 
       <!-- Desktop User Section -->
       <div class="hidden md:flex items-center space-x-6">
@@ -52,9 +105,9 @@
         <button class="mobile-menu-button p-2 text-gray-600 hover:text-gray-900 transition-colors">
           <span class="sr-only">Open menu</span>
           <div class="w-6 h-6 flex flex-col justify-center items-center">
-            <span class="bg-current block h-0.5 w-6 rounded-sm"></span>
-            <span class="bg-current block h-0.5 w-6 rounded-sm my-1"></span>
-            <span class="bg-current block h-0.5 w-6 rounded-sm"></span>
+            <span class="bg-current block h-0.5 w-6 rounded-sm transition-all"></span>
+            <span class="bg-current block h-0.5 w-6 rounded-sm my-1 transition-all"></span>
+            <span class="bg-current block h-0.5 w-6 rounded-sm transition-all"></span>
           </div>
         </button>
       </div>
@@ -66,12 +119,30 @@
     <div class="px-6 py-4 space-y-4">
       <!-- Mobile Navigation Links -->
       <div class="space-y-1">
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Jersey</a>
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Shoes</a>
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Shorts</a>
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Accessories</a>
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Merchandise</a>
-        <a href="#" class="block text-gray-700 hover:text-green-600 font-medium py-2 transition-colors">Others</a>
+        <a href="{% url 'main:show_category' 'JERSEY' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'JERSEY' in request.path %}active{% endif %}">
+          Jersey
+        </a>
+        <a href="{% url 'main:show_category' 'SHOES' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'SHOES' in request.path %}active{% endif %}">
+          Shoes
+        </a>
+        <a href="{% url 'main:show_category' 'SHORTS' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'SHORTS' in request.path %}active{% endif %}">
+          Shorts
+        </a>
+        <a href="{% url 'main:show_category' 'GEAR' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'GEAR' in request.path %}active{% endif %}">
+          Accessories
+        </a>
+        <a href="{% url 'main:show_category' 'MERCH' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'MERCH' in request.path %}active{% endif %}">
+          Merchandise
+        </a>
+        <a href="{% url 'main:show_category' 'OTHERS' %}" 
+           class="mobile-nav-link block text-gray-700 hover:text-green-600 font-medium py-2 px-3 transition-all {% if request.resolver_match.url_name == 'show_category' and 'OTHERS' in request.path %}active{% endif %}">
+          Others
+        </a>
       </div>
       
       <!-- Mobile User Section -->

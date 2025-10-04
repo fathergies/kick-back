@@ -17,6 +17,8 @@
 
 {% block content %}
 {% include 'navbar.html' %}
+{% include 'modal.html' %} 
+
 <div class="bg-gradient-to-b from-gray-50 to-white w-full pt-20 min-h-screen">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Header Section -->
@@ -34,9 +36,9 @@
         <a href="?filter=my" class="{% if request.GET.filter == 'my' %}bg-green-600 text-white shadow-md{% else %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-50{% endif %} px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-green-600 hover:text-white hover:shadow-md">
           My Products
         </a>
-        <a href="{% url 'main:create_product' %}" class="bg-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-teal-600 hover:shadow-md">
+        <button onclick="showModal()" class="bg-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-teal-600 hover:shadow-md">
           Create Product
-        </a>
+        </button>
       </div>
       {% if user.is_authenticated %}
         <div class="text-sm text-gray-500">
@@ -53,12 +55,12 @@
         </div>
         <h3 class="text-xl font-semibold text-gray-900 mb-3">No Products Found</h3>
         <p class="text-gray-600 mb-6 max-w-md mx-auto">Be the first to share exciting football products with the community!</p>
-        <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-sm hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+        <button onclick="showModal()" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-sm hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
           Create Product
-        </a>
+        </button>
       </div>
     {% else %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 fade-in">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 fade-in" id="productGrid">
         {% for product in product_list %}
           {% include 'card_product.html' with product=product %}
         {% endfor %}
@@ -66,4 +68,81 @@
     {% endif %}
   </div>
 </div>
+
+<script>
+  const productForm = document.getElementById('productForm');
+  const productGrid = document.getElementById('productGrid');
+
+  function buildProductCardElement(product) {
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full';
+
+    const thumbnailHtml = product.thumbnail
+      ? `<img src="${product.thumbnail}" alt="${product.name}" class="w-full h-full object-cover">`
+      : `<div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">No thumbnail</div>`;
+
+    const editDeleteButtons =
+      "{{ user.id|default_if_none:'' }}" && Number("{{ user.id|default_if_none:'' }}") === Number(product.user_id)
+        ? `<div class="flex space-x-2">
+            <a href="/products/edit/${product.id}/" class="text-gray-600 hover:text-gray-700 text-sm">Edit</a>
+            <a href="/products/delete/${product.id}/" class="text-red-600 hover:text-red-700 text-sm" onclick="return confirm('Are you sure?')">Delete</a>
+          </div>`
+        : '';
+
+    card.innerHTML = `
+      <div class="aspect-[16/9] relative overflow-hidden">
+        ${thumbnailHtml}
+      </div>
+      <div class="p-5 flex flex-col flex-1">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+          ${product.name}
+        </h3>
+        <p class="text-gray-600 text-sm mb-3 line-clamp-3">${product.description || ''}</p>
+        <div class="text-gray-800 font-bold mb-4">Rp ${Number(product.price).toLocaleString()}</div>
+        <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+          ${editDeleteButtons}
+        </div>
+      </div>
+    `;
+    return card;
+  }
+
+  productForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const formData = new FormData(productForm);
+    const payload = {
+      name: formData.get('name'),
+      specification: formData.get('specification'),
+      price: formData.get('price'),
+      description: formData.get('description'),
+      thumbnail: formData.get('thumbnail'),
+      category: formData.get('category'),
+      is_featured: formData.get('is_featured') === 'on'
+    };
+
+    try {
+      const res = await fetch("{% url 'main:create_product' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok) throw new Error('Failed to create product');
+      const newProduct = await res.json();
+
+      const card = buildProductCardElement(newProduct);
+      if(productGrid) productGrid.prepend(card);
+
+      hideModal();
+      productForm.reset();
+    } catch(err) {
+      console.error(err);
+      alert("Gagal membuat produk, coba lagi.");
+    }
+  });
+</script>
 {% endblock content %}
