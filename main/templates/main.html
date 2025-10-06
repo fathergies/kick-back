@@ -12,6 +12,14 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  
+  .refresh-spin {
+    animation: spin 0.5s linear;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 </style>
 {% endblock meta %}
 
@@ -36,8 +44,17 @@
         <a href="?filter=my" class="{% if request.GET.filter == 'my' %}bg-green-600 text-white shadow-md{% else %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-50{% endif %} px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-green-600 hover:text-white hover:shadow-md">
           My Products
         </a>
-        <button onclick="showModal()" class="bg-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-teal-600 hover:shadow-md">
+        <a href="{% url 'main:create_product' %}" class="bg-teal-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-teal-600 hover:shadow-md">
           Create Product
+        </a>
+        <button onclick="showModal()" class="bg-purple-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-purple-600 hover:shadow-md">
+          Quick Add Product
+        </button>
+        <button onclick="refreshProducts()" id="refreshBtn" class="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ease-in-out hover:bg-blue-600 hover:shadow-md flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh
         </button>
       </div>
       {% if user.is_authenticated %}
@@ -48,30 +65,39 @@
     </div>
 
     <!-- Product Grid -->
-    {% if not product_list %}
-      <div class="bg-white rounded-2xl shadow-lg p-12 text-center fade-in">
-        <div class="w-40 h-40 mx-auto mb-6">
-          <img src="{% static 'image/no-product.png' %}" alt="No products available" class="w-full h-full object-contain opacity-80">
+    <div id="productContainer">
+      {% if not product_list %}
+        <div class="bg-white rounded-2xl shadow-lg p-12 text-center fade-in" id="emptyState">
+          <div class="w-40 h-40 mx-auto mb-6">
+            <img src="{% static 'image/no-product.png' %}" alt="No products available" class="w-full h-full object-contain opacity-80">
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">No Products Found</h3>
+          <p class="text-gray-600 mb-6 max-w-md mx-auto">Be the first to share exciting football products with the community!</p>
+          <div class="flex items-center justify-center space-x-4">
+            <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-sm hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+              Create Product
+            </a>
+            <button onclick="showModal()" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+              Quick Add Product
+            </button>
+          </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">No Products Found</h3>
-        <p class="text-gray-600 mb-6 max-w-md mx-auto">Be the first to share exciting football products with the community!</p>
-        <button onclick="showModal()" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-sm hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
-          Create Product
-        </button>
-      </div>
-    {% else %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 fade-in" id="productGrid">
-        {% for product in product_list %}
-          {% include 'card_product.html' with product=product %}
-        {% endfor %}
-      </div>
-    {% endif %}
+      {% else %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 fade-in" id="productGrid">
+          {% for product in product_list %}
+            {% include 'card_product.html' with product=product %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
   </div>
 </div>
 
 <script>
   const productForm = document.getElementById('productForm');
-  const productGrid = document.getElementById('productGrid');
+  const productContainer = document.getElementById('productContainer');
+  const currentUserId = "{{ user.id|default_if_none:'' }}";
+  const currentFilter = "{{ request.GET.filter|default:'all' }}";
 
   function buildProductCardElement(product) {
     const card = document.createElement('div');
@@ -81,13 +107,12 @@
       ? `<img src="${product.thumbnail}" alt="${product.name}" class="w-full h-full object-cover">`
       : `<div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">No thumbnail</div>`;
 
-    const editDeleteButtons =
-      "{{ user.id|default_if_none:'' }}" && Number("{{ user.id|default_if_none:'' }}") === Number(product.user_id)
-        ? `<div class="flex space-x-2">
-            <a href="/products/edit/${product.id}/" class="text-gray-600 hover:text-gray-700 text-sm">Edit</a>
-            <a href="/products/delete/${product.id}/" class="text-red-600 hover:text-red-700 text-sm" onclick="return confirm('Are you sure?')">Delete</a>
-          </div>`
-        : '';
+    const editDeleteButtons = currentUserId && Number(currentUserId) === Number(product.user_id)
+      ? `<div class="flex space-x-2">
+          <a href="/products/edit/${product.id}/" class="text-gray-600 hover:text-gray-700 text-sm">Edit</a>
+          <button onclick="deleteProductAjax(${product.id})" class="text-red-600 hover:text-red-700 text-sm">Delete</button>
+        </div>`
+      : '';
 
     card.innerHTML = `
       <div class="aspect-[16/9] relative overflow-hidden">
@@ -105,6 +130,90 @@
       </div>
     `;
     return card;
+  }
+
+  async function refreshProducts() {
+  const refreshBtn = document.getElementById('refreshBtn');
+  const icon = refreshBtn.querySelector('svg');
+  
+  icon.classList.add('refresh-spin');
+  refreshBtn.disabled = true;
+
+  try {
+    const filterParam = currentFilter !== 'all' ? `?filter=${currentFilter}` : '';
+    const res = await fetch(`/json/${filterParam}`);
+    
+    if (!res.ok) throw new Error('Failed to fetch products');
+    
+    const products = await res.json();
+    
+    // Clear container
+    productContainer.innerHTML = '';
+
+    if (products.length === 0) {
+      // Empty state
+      productContainer.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-lg p-12 text-center fade-in" id="emptyState">
+          <div class="w-40 h-40 mx-auto mb-6">
+            <img src="{% static 'image/no-product.png' %}" alt="No products available" class="w-full h-full object-contain opacity-80">
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-3">No Products Found</h3>
+          <p class="text-gray-600 mb-6 max-w-md mx-auto">Be the first to share exciting football products with the community!</p>
+          <div class="flex items-center justify-center space-x-4">
+            <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-sm hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+              Create Product
+            </a>
+            <button onclick="showModal()" class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+              Quick Add Product
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      // Buat grid baru
+      const grid = document.createElement('div');
+      grid.id = 'productGrid';
+      grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 fade-in';
+      
+      products.forEach(product => {
+        const card = buildProductCardElement(product);
+        grid.appendChild(card);
+      });
+      
+      productContainer.appendChild(grid);
+    }
+  } catch(err) {
+    console.error(err);
+    alert('Failed to refresh products. Please try again.');
+  } finally {
+    setTimeout(() => {
+      icon.classList.remove('refresh-spin');
+      refreshBtn.disabled = false;
+    }, 500);
+  }
+}
+
+
+  async function deleteProductAjax(productId) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+      const res = await fetch(`/products/delete/${productId}/`, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      });
+
+      if (!res.ok) throw new Error('Failed to delete product');
+      
+      // Refresh products after delete
+      await refreshProducts();
+    } catch(err) {
+      console.error(err);
+      alert('Failed to delete product. Please try again.');
+    }
   }
 
   productForm.addEventListener('submit', async function(e){
@@ -132,13 +241,12 @@
       });
 
       if(!res.ok) throw new Error('Failed to create product');
-      const newProduct = await res.json();
-
-      const card = buildProductCardElement(newProduct);
-      if(productGrid) productGrid.prepend(card);
-
+      
       hideModal();
       productForm.reset();
+      
+      // Auto refresh after create
+      await refreshProducts();
     } catch(err) {
       console.error(err);
       alert("Gagal membuat produk, coba lagi.");

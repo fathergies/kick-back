@@ -24,33 +24,18 @@
         <p class="text-gray-500 text-base">Create your <span class="font-semibold text-green-600">KickBack</span> account</p>
       </div>
 
-      <!-- Form Errors Display -->
-      {% if form.non_field_errors %}
-        <div class="mb-6 space-y-3">
-          {% for error in form.non_field_errors %}
-            <div class="px-4 py-3 rounded-lg text-sm border bg-red-50 border-red-200 text-red-800 shadow-sm">
-              {{ error }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
+      <!-- Error Display Container -->
+      <div id="errorContainer" class="mb-6 space-y-3 hidden"></div>
 
-      {% if form.errors %}
-        <div class="mb-6 space-y-3">
-          {% for field, errors in form.errors.items %}
-            {% if field != '__all__' %}
-              {% for error in errors %}
-                <div class="px-4 py-3 rounded-lg text-sm border bg-red-50 border-red-200 text-red-800 shadow-sm">
-                  <strong>{{ field|title }}:</strong> {{ error }}
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endfor %}
+      <!-- Success Message Container -->
+      <div id="successContainer" class="mb-6 hidden">
+        <div class="px-4 py-3 rounded-lg text-sm border bg-green-50 border-green-200 text-green-800 shadow-sm">
+          <strong>Success!</strong> Your account has been created. Redirecting to login...
         </div>
-      {% endif %}
+      </div>
 
       <!-- Form -->
-      <form method="POST" action="" class="space-y-6">
+      <form id="registerForm" class="space-y-6">
         {% csrf_token %}
         
         <div>
@@ -103,29 +88,11 @@
 
         <button 
           type="submit" 
+          id="submitBtn"
           class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-xl hover:from-green-600 hover:to-green-700 transform hover:-translate-y-1 transition-all duration-300">
           Create Account
         </button>
       </form>
-
-      <!-- Messages Display -->
-      {% if messages %}
-        <div class="mt-6 space-y-3">
-          {% for message in messages %}
-            <div 
-              class="px-4 py-3 rounded-lg text-sm border shadow-sm
-                {% if message.tags == 'success' %}
-                  bg-green-50 border-green-200 text-green-800
-                {% elif message.tags == 'error' %}
-                  bg-red-50 border-red-200 text-red-800
-                {% else %}
-                  bg-gray-50 border-gray-200 text-gray-700
-                {% endif %}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
 
       <!-- Footer -->
       <div class="mt-8 text-center pt-6 border-t border-gray-100">
@@ -139,4 +106,82 @@
     </div>
   </div>
 </div>
+
+<script>
+  const registerForm = document.getElementById('registerForm');
+  const errorContainer = document.getElementById('errorContainer');
+  const successContainer = document.getElementById('successContainer');
+  const submitBtn = document.getElementById('submitBtn');
+
+  registerForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Clear previous messages
+    errorContainer.innerHTML = '';
+    errorContainer.classList.add('hidden');
+    successContainer.classList.add('hidden');
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating account...';
+
+    const formData = new FormData(registerForm);
+    
+    try {
+      const response = await fetch("{% url 'main:register' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Success - show message and redirect
+        successContainer.classList.remove('hidden');
+        registerForm.reset();
+        
+        setTimeout(() => {
+          window.location.href = data.redirect_url;
+        }, 2000);
+      } else {
+        // Show errors
+        errorContainer.classList.remove('hidden');
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, errors]) => {
+            errors.forEach(error => {
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'px-4 py-3 rounded-lg text-sm border bg-red-50 border-red-200 text-red-800 shadow-sm';
+              errorDiv.innerHTML = field !== '__all__' 
+                ? `<strong>${field.charAt(0).toUpperCase() + field.slice(1)}:</strong> ${error}`
+                : error;
+              errorContainer.appendChild(errorDiv);
+            });
+          });
+        } else if (data.message) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'px-4 py-3 rounded-lg text-sm border bg-red-50 border-red-200 text-red-800 shadow-sm';
+          errorDiv.textContent = data.message;
+          errorContainer.appendChild(errorDiv);
+        }
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      errorContainer.classList.remove('hidden');
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'px-4 py-3 rounded-lg text-sm border bg-red-50 border-red-200 text-red-800 shadow-sm';
+      errorDiv.textContent = 'An error occurred. Please try again.';
+      errorContainer.appendChild(errorDiv);
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Account';
+    }
+  });
+</script>
 {% endblock content %}

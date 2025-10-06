@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Modal</title>
+  <title>Product Modals</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .form-group input[type="text"],
@@ -19,7 +19,7 @@
       transition: all 0.2s;
       background-color: white;
     }
-    
+
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
@@ -27,17 +27,17 @@
       border-color: #0d9488;
       box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
     }
-    
+
     .form-group textarea {
       min-height: 80px;
       resize: vertical;
     }
-    
+
     .required::after {
       content: " *";
       color: #ef4444;
     }
-    
+
     .checkbox-container {
       display: flex;
       align-items: start;
@@ -49,7 +49,7 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    
+
     .checkbox-container:hover {
       border-color: #0d9488;
       background-color: #f0fdfa;
@@ -58,13 +58,18 @@
 </head>
 <body class="bg-gray-50 p-8">
 
-  <!-- Modal -->
+  <!-- Product Grid Preview -->
+  <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+    <!-- Products will appear here -->
+  </div>
+
+  <!-- ==================== CREATE PRODUCT MODAL ==================== -->
   <div id="crudModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4">
     <div id="crudModalContent" class="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-200 opacity-0 scale-95 relative">
-      
+
       <!-- Exit Button -->
       <button type="button" onclick="hideModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold z-10">✖</button>
-      
+
       <!-- Header Card -->
       <div class="bg-gradient-to-r from-teal-600 to-teal-500 rounded-t-xl shadow-lg p-6 relative overflow-hidden">
         <div class="absolute w-36 h-36 rounded-full opacity-10 top-[-40px] right-[-40px] bg-white"></div>
@@ -92,8 +97,8 @@
       <!-- Form Card -->
       <div class="bg-white rounded-b-xl shadow-lg border-t border-gray-100 p-6 sm:p-8">
         <form id="productForm" class="space-y-6">
-          
-          <!-- Name -->
+
+          <!-- Product Name -->
           <div class="form-group">
             <label for="id_name" class="block text-sm font-medium text-gray-700 mb-2 required">Product Name</label>
             <input type="text" name="name" id="id_name" placeholder="Enter product name" required>
@@ -117,7 +122,7 @@
             <textarea name="description" id="id_description" placeholder="Enter product description"></textarea>
           </div>
 
-          <!-- Thumbnail -->
+          <!-- Thumbnail URL -->
           <div class="form-group">
             <label for="id_thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Thumbnail URL</label>
             <input type="url" name="thumbnail" id="id_thumbnail" placeholder="https://example.com/image.jpg">
@@ -136,7 +141,7 @@
             </select>
           </div>
 
-          <!-- Is Featured -->
+          <!-- Featured Checkbox -->
           <div class="form-group">
             <div class="checkbox-container">
               <input type="checkbox" name="is_featured" id="id_is_featured" class="w-5 h-5 mt-0.5 cursor-pointer accent-teal-600">
@@ -158,19 +163,51 @@
           </div>
         </form>
       </div>
-
     </div>
   </div>
 
-  <!-- Product Grid Preview -->
-  <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-    <!-- Products will appear here -->
+  <!-- ==================== DELETE CONFIRMATION MODAL ==================== -->
+  <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4">
+    <div id="deleteModalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-200 opacity-0 scale-95">
+      
+      <!-- Icon & Header -->
+      <div class="p-6 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+          <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Product?</h3>
+        <p class="text-gray-600 text-sm mb-1" id="deleteProductName">Are you sure you want to delete this product?</p>
+        <p class="text-gray-500 text-xs">This action cannot be undone.</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="bg-gray-50 px-6 py-4 rounded-b-2xl flex flex-col-reverse sm:flex-row gap-3">
+        <button 
+          type="button" 
+          onclick="hideDeleteModal()" 
+          class="flex-1 px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 transition-all">
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          id="confirmDeleteBtn"
+          class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-all shadow-md hover:shadow-lg">
+          Delete Product
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
     const productForm = document.getElementById('productForm');
     const productGrid = document.getElementById('productGrid');
+    let deleteProductUrl = '';
+    let deleteProductName = '';
 
+    // ========== CREATE MODAL FUNCTIONS ==========
     function showModal() {
       const modal = document.getElementById('crudModal');
       const modalContent = document.getElementById('crudModalContent');
@@ -192,11 +229,11 @@
       }, 200);
     }
 
+    // Handle Form Submit
     productForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(productForm);
-      
-      // Simulate product creation
+
       const newProduct = {
         name: formData.get('name'),
         category: formData.get('category'),
@@ -204,7 +241,7 @@
         specification: formData.get('specification'),
         description: formData.get('description'),
         is_featured: formData.get('is_featured') === 'on',
-        thumbnail: null
+        thumbnail: formData.get('thumbnail')
       };
 
       // Create product card
@@ -225,22 +262,74 @@
           <p class="text-gray-600 text-sm mb-3 line-clamp-2">${newProduct.description || 'No description provided'}</p>
           <div class="flex items-center justify-between pt-3 border-t border-gray-100">
             <span class="text-xl font-bold text-teal-600">Rp ${Number(newProduct.price).toLocaleString('id-ID')}</span>
-            <button class="text-sm text-teal-600 font-semibold hover:text-teal-700">View →</button>
+            <button onclick="showDeleteModal('${newProduct.name}', '${newProduct.name}')" class="text-sm text-red-600 font-semibold hover:text-red-700">Delete</button>
           </div>
         </div>
       `;
       
       productGrid.prepend(card);
       hideModal();
-      
-      // Show success message
       alert('✅ Product created successfully!');
     });
 
-    // Close modal on outside click
+    // ========== DELETE MODAL FUNCTIONS ==========
+    function showDeleteModal(productId, productName) {
+      deleteProductUrl = `/products/delete/${productId}/`;
+      deleteProductName = productName;
+      
+      const modal = document.getElementById('deleteModal');
+      const modalContent = document.getElementById('deleteModalContent');
+      const productNameElement = document.getElementById('deleteProductName');
+      
+      if (productName) {
+        productNameElement.innerHTML = `Are you sure you want to delete <strong>"${productName}"</strong>?`;
+      }
+      
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 10);
+    }
+
+    function hideDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      const modalContent = document.getElementById('deleteModalContent');
+      
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        deleteProductUrl = '';
+        deleteProductName = '';
+      }, 200);
+    }
+
+    // Confirm delete action
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+      if (deleteProductUrl) {
+        window.location.href = deleteProductUrl;
+      }
+    });
+
+    // ========== MODAL CLOSE HANDLERS ==========
     document.getElementById('crudModal').addEventListener('click', function(e) {
       if (e.target === this) {
         hideModal();
+      }
+    });
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        hideDeleteModal();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        hideModal();
+        hideDeleteModal();
       }
     });
   </script>
