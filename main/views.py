@@ -321,20 +321,81 @@ def edit_product(request, id):
         return redirect('main:show_main')
 
     form = ProductForm(request.POST or None, instance=product)
-    if form.is_valid() and request.method == 'POST':
+    
+    if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, "Product updated successfully!")
         return redirect('main:show_main')
 
     context = {
         'form': form,
-        'product_id': id # Tambahkan product_id ke context jika dibutuhkan di template
+        'product': product,   # ✅ Tambahkan ini biar template kamu nggak error
+        'product_id': id,
     }
 
     return render(request, "edit_product.html", context)
+
 
 # Fungsi ini tidak lengkap dan tidak memiliki return statement.
 # Jika tidak digunakan, sebaiknya dihapus. Jika digunakan, perlu dilengkapi.
 # Saya akan meninggalkannya seperti adanya, tapi ini adalah potensi masalah jika dipanggil.
 def product_navbar(request,id):
     product = Product.objects.all()
+
+@login_required(login_url='/login')
+def get_product_json(request, id):
+    try:
+        product = Product.objects.get(pk=id, user=request.user)
+        
+        # Handle thumbnail safely
+        if hasattr(product.thumbnail, 'url'):
+            thumbnail_value = product.thumbnail.url if product.thumbnail else ''
+        else:
+            thumbnail_value = product.thumbnail if product.thumbnail else ''
+        
+        data = {
+            'id': str(product.id),
+            'name': product.name,
+            'specification': product.specification,
+            'price': str(product.price),
+            'description': product.description or '',
+            'thumbnail': thumbnail_value,
+            'category': product.category,
+            'is_featured': product.is_featured,
+        }
+        return JsonResponse(data)
+    except Product.DoesNotExist:
+        return JsonResponse({'error': 'Product not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+# ========== EDIT PRODUCT AJAX ==========
+@login_required(login_url='/login')
+@csrf_exempt
+def edit_product_ajax(request, id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    try:
+        product = Product.objects.get(pk=id, user=request.user)
+        data = json.loads(request.body)
+        
+        product.name = data.get('name')
+        product.specification = data.get('specification')
+        product.price = data.get('price')
+        product.description = data.get('description', '')
+        product.thumbnail = data.get('thumbnail', '')
+        product.category = data.get('category')
+        product.is_featured = data.get('is_featured', False)
+        
+        product.save()
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Product updated successfully'
+        })
+    except Product.DoesNotExist:
+        return JsonResponse({'error': 'Product not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
