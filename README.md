@@ -152,3 +152,60 @@ kalau flexbox itu cara buat ngatur layout elemen secara fleksibel dalam satu ara
 
 22. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
 step-by-step implementasi checklist tadi biasanya aku mulai dari bikin struktur beberapa html baru yang dibutuhin dulu, terus ditambahin css dengan mikirin hierarchy selector biar ga bentrok. abis itu aku coba testing di berbagai device pake dev tools chrome buat pastiin responsivenya jalan. margin, border, padding aku coba dulu pake box model biar elemen ga nempel. buat layout biasanya awalnya pake flexbox buat yang sederhana kayak navbar atau card, terus kalau layoutnya kompleks aku pake grid. kalau udah jalan, baru aku refine stylingnya biar lebih enak dilihat dan rapih.
+
+
+------------------------------------------------TUGAS 6---------------------------------------------------
+23. perbedaan antara synchronous dan asynchronous request
+synchronous request berjalan secara berurutan. browser akan menunggu respons dari server terlebih dahulu sebelum melakukan proses lain. selama menunggu, pengguna tidak bisa berinteraksi dengan halaman karena tampilannya seolah berhenti. contohnya seperti saat mengirim form dan seluruh halaman memuat ulang setelah dikirim.
+
+sedangkan asynchronous request berjalan secara paralel. browser tidak perlu menunggu server selesai untuk melanjutkan proses lain. pengguna tetap bisa menggunakan halaman sementara data sedang diproses di belakang layar. ketika respons sudah diterima, hasilnya langsung muncul tanpa perlu reload halaman.
+
+singkatnya, synchronous membuat halaman berhenti sementara, sedangkan asynchronous membuat halaman tetap interaktif.
+
+24. cara kerja ajax di django (alur request–response)
+
+ada event di sisi client, misalnya pengguna menekan tombol
+
+javascript atau jquery mengirimkan request ajax ke url tertentu di django dengan metode get atau post
+
+view di django menerima request tersebut dan memproses data, seperti validasi atau query database
+
+django mengirim respons dalam bentuk json
+
+javascript di sisi client menerima data json itu
+
+javascript memperbarui tampilan halaman sesuai data yang diterima tanpa perlu reload
+
+25. keuntungan menggunakan ajax dibanding render biasa di django
+
+halaman tidak perlu reload sehingga terasa lebih cepat dan ringan
+
+lebih hemat data karena hanya mengirim bagian yang dibutuhkan, bukan seluruh html
+
+pengalaman pengguna jadi lebih baik karena proses seperti filter, validasi, dan pagination bisa langsung dilakukan di halaman
+
+cocok untuk fitur interaktif seperti live search, notifikasi langsung, atau infinite scroll
+
+26. cara menjaga keamanan saat menggunakan ajax untuk login dan register di django
+
+gunakan csrf token bawaan django pada setiap request post ajax
+
+tetap lakukan validasi input di sisi server agar data yang dikirim benar dan aman
+
+gunakan https supaya data sensitif seperti password tidak bocor
+
+manfaatkan sistem autentikasi bawaan django seperti fungsi authenticate() dan login()
+
+batasi akses ke endpoint ajax dengan decorator seperti @login_required
+
+27. pengaruh ajax terhadap pengalaman pengguna (user experience)
+
+membuat halaman terasa cepat karena tidak perlu reload penuh
+
+interaksi jadi lebih halus dan real-time
+
+mengurangi waktu tunggu serta menghindari efek layar berkedip saat reload
+
+mendukung fitur modern seperti auto-suggest, notifikasi langsung, dan live update
+
+tapi kalau implementasinya kurang baik, misalnya tanpa indikator loading atau error handling yang jelas, ajax justru bisa membuat pengguna bingung karena tidak tahu apakah proses sedang berjalan atau gagal.
